@@ -1,3 +1,141 @@
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('/fonts/Galmuri11.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-bg: #2e2b52;
+  --color-card: #3f3b6b;
+  --color-wood: #c9a876;
+  --color-wood-dark: #a8875c;
+  --color-accent-moon: #f4e4a6;
+  --color-accent-pink: #f4c6d7;
+  --color-accent-lavender: #d8c6f4;
+  --color-text: #f5f0e6;
+  --shadow-pixel: 4px 4px 0 var(--color-wood-dark);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Galmuri11', sans-serif;
+}
+
+.pull-to-refresh {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.pixel-button {
+  font-family: 'Galmuri11', sans-serif;
+  background: var(--color-wood);
+  color: #3a3a3a;
+  border: 3px solid var(--color-wood-dark);
+  box-shadow: var(--shadow-pixel);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.pixel-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.pixel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.word-card {
+  background: var(--color-card);
+  border: 6px solid var(--color-wood-dark);
+  box-shadow: var(--shadow-pixel);
+  padding: 24px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.pixel-radio-group {
+  border: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.pixel-radio-group__options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pixel-radio-group__option--selected {
+  background: var(--color-accent-lavender);
+}
+
+.sleep-entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sleep-entry-form__error {
+  color: var(--color-accent-pink);
+}
+
+.calendar-view__weekdays,
+.calendar-view__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-view__weekdays {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.calendar-view__day {
+  font-family: 'Galmuri11', sans-serif;
+  background: var(--color-wood);
+  border: 2px solid var(--color-wood-dark);
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendar-view__day--selected {
+  background: var(--color-accent-pink);
+}
+
+.stats-summary__value {
+  font-size: 1.25rem;
+}
+
+.pull-to-refresh__indicator {
+  text-align: center;
+  padding: 8px;
+  font-size: 0.85rem;
+  color: var(--color-accent-moon);
 }
