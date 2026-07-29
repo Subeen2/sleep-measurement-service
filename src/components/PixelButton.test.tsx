@@ -23,4 +23,11 @@ describe('PixelButton', () => {
     );
     expect(screen.getByText('눌러줘')).toBeDisabled();
   });
+
+  it('calls the click handler when not disabled', async () => {
+    const onClick = vi.fn();
+    render(<PixelButton onClick={onClick}>눌러줘</PixelButton>);
+    await userEvent.click(screen.getByText('눌러줘'));
+    expect(onClick).toHaveBeenCalledOnce();
+  });
 });
