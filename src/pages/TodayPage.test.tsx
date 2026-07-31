@@ -51,7 +51,7 @@ describe('TodayPage', () => {
 
   it('saves a new entry and shows the summary after submitting the form', async () => {
     vi.spyOn(sleepStorage, 'getEntry').mockReturnValue(null);
-    const saveSpy = vi.spyOn(sleepStorage, 'saveEntry').mockImplementation(() => {});
+    const saveSpy = vi.spyOn(sleepStorage, 'saveEntry').mockReturnValue(true);
     render(<TodayPage />);
 
     fireEvent.change(screen.getByLabelText('자려고 누운 시간'), { target: { value: '23:00' } });
@@ -63,5 +63,22 @@ describe('TodayPage', () => {
 
     expect(saveSpy).toHaveBeenCalledWith(expect.objectContaining({ date: TODAY }));
     expect(screen.getByText(/기록 완료/)).toBeInTheDocument();
+  });
+
+  it('shows an inline error and stays on the form when saving fails', async () => {
+    vi.spyOn(sleepStorage, 'getEntry').mockReturnValue(null);
+    vi.spyOn(sleepStorage, 'saveEntry').mockReturnValue(false);
+    render(<TodayPage />);
+
+    fireEvent.change(screen.getByLabelText('자려고 누운 시간'), { target: { value: '23:00' } });
+    fireEvent.change(screen.getByLabelText('마지막으로 화면을 본 시간'), { target: { value: '23:30' } });
+    fireEvent.change(screen.getByLabelText('기상 시간'), { target: { value: '07:00' } });
+    await userEvent.click(screen.getByText('개운함'));
+    await userEvent.click(screen.getByText('안아픔'));
+    await userEvent.click(screen.getByText('기록하기'));
+
+    expect(screen.getByText('저장하지 못했어요. 잠시 후 다시 시도해주세요.')).toBeInTheDocument();
+    expect(screen.queryByText(/기록 완료/)).not.toBeInTheDocument();
+    expect(screen.getByLabelText('기상 시간')).toBeInTheDocument();
   });
 });

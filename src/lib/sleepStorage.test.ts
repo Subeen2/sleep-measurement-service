@@ -57,4 +57,27 @@ describe('sleepStorage', () => {
     localStorage.setItem('sleepDiary:entries', 'not valid json');
     expect(getAllEntries()).toEqual([]);
   });
+
+  it('returns true from saveEntry on success', () => {
+    expect(saveEntry(makeEntry('2026-07-28'))).toBe(true);
+  });
+
+  it('returns false from saveEntry without throwing when localStorage.setItem fails', () => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+    expect(() => saveEntry(makeEntry('2026-07-28'))).not.toThrow();
+    expect(saveEntry(makeEntry('2026-07-28'))).toBe(false);
+    setItemSpy.mockRestore();
+  });
+
+  it('returns safe defaults without throwing when localStorage.getItem fails', () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('storage blocked');
+    });
+    expect(() => getAllEntries()).not.toThrow();
+    expect(getAllEntries()).toEqual([]);
+    expect(getEntry('2026-07-28')).toBeNull();
+    getItemSpy.mockRestore();
+  });
 });

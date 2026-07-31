@@ -34,7 +34,7 @@ describe('StatsPage', () => {
     ]);
     render(<StatsPage />);
 
-    expect(screen.getByText('가장 컨디션이 좋았던 취침 시간대')).toBeInTheDocument();
+    expect(screen.getByText('가장 컨디션이 좋았던 잠든 시간대')).toBeInTheDocument();
     expect(screen.getByText('가장 컨디션이 좋았던 수면 시간')).toBeInTheDocument();
     // All three share the same last-screen-time bucket (00시~02시), so it's trivially the "best".
     expect(screen.getByText('00시~02시')).toBeInTheDocument();

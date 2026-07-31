@@ -12,7 +12,7 @@ export function StatsPage() {
   return (
     <div className="stats-page">
       <StatsSummary
-        title="가장 컨디션이 좋았던 취침 시간대"
+        title="가장 컨디션이 좋았던 잠든 시간대"
         bucket={bestSleepOnsetBucket(entries)}
         emptyMessage="아직 데이터가 부족해요"
       />

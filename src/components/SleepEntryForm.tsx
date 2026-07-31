@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { AlcoholType, OverallCondition, PhysicalCondition, SleepEntry } from '../lib/sleepTypes';
+import { OVERALL_CONDITION_OPTIONS, PHYSICAL_CONDITION_OPTIONS, ALCOHOL_OPTIONS } from '../lib/sleepLabels';
 import { PixelRadioGroup } from './PixelRadioGroup';
 import { PixelButton } from './PixelButton';
 
@@ -8,26 +9,6 @@ interface SleepEntryFormProps {
   initialEntry?: SleepEntry;
   onSubmit: (entry: SleepEntry) => void;
 }
-
-const OVERALL_OPTIONS: { value: OverallCondition; label: string }[] = [
-  { value: 'tired', label: '피곤함' },
-  { value: 'better_than_usual', label: '평소보다 개운함' },
-  { value: 'refreshed', label: '개운함' },
-];
-
-const PHYSICAL_OPTIONS: { value: PhysicalCondition; label: string }[] = [
-  { value: 'headache', label: '머리아픔' },
-  { value: 'groggy', label: '멍함' },
-  { value: 'none', label: '안아픔' },
-];
-
-const ALCOHOL_OPTIONS: { value: AlcoholType; label: string }[] = [
-  { value: 'beer', label: '맥주' },
-  { value: 'wine', label: '와인' },
-  { value: 'soju', label: '소주' },
-  { value: 'spirits', label: '양주' },
-  { value: 'other', label: '기타' },
-];
 
 export function SleepEntryForm({ date, initialEntry, onSubmit }: SleepEntryFormProps) {
   const [bedTime, setBedTime] = useState(initialEntry?.bedTime ?? '');
@@ -61,7 +42,7 @@ export function SleepEntryForm({ date, initialEntry, onSubmit }: SleepEntryFormP
       overallCondition,
       physicalCondition,
       caffeineShots,
-      caffeineTime: caffeineTime || undefined,
+      caffeineTime: caffeineShots > 0 ? caffeineTime || undefined : undefined,
       hadAlcohol,
       alcoholType: hadAlcohol ? alcoholType : undefined,
       lastMealTime: lastMealTime || undefined,
@@ -85,13 +66,13 @@ export function SleepEntryForm({ date, initialEntry, onSubmit }: SleepEntryFormP
 
       <PixelRadioGroup
         legend="오늘 컨디션"
-        options={OVERALL_OPTIONS}
+        options={OVERALL_CONDITION_OPTIONS}
         value={overallCondition}
         onChange={setOverallCondition}
       />
       <PixelRadioGroup
         legend="몸 상태"
-        options={PHYSICAL_OPTIONS}
+        options={PHYSICAL_CONDITION_OPTIONS}
         value={physicalCondition}
         onChange={setPhysicalCondition}
       />

@@ -18,6 +18,7 @@ describe('DayDetailCard', () => {
     render(<DayDetailCard entry={BASE_ENTRY} />);
     expect(screen.getByText('2026-07-28')).toBeInTheDocument();
     expect(screen.getByText(/7시간 30분/)).toBeInTheDocument();
+    expect(screen.getByText(/뒤척인 시간.*0시간 30분/)).toBeInTheDocument();
     expect(screen.getByText(/개운함/)).toBeInTheDocument();
     expect(screen.getByText(/안아픔/)).toBeInTheDocument();
   });

@@ -10,9 +10,15 @@ export function TodayPage() {
   const today = getLocalDateString();
   const [entry, setEntry] = useState<SleepEntry | null>(() => getEntry(today));
   const [editing, setEditing] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   function handleSubmit(newEntry: SleepEntry) {
-    saveEntry(newEntry);
+    const saved = saveEntry(newEntry);
+    if (!saved) {
+      setSaveError('저장하지 못했어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    setSaveError(null);
     setEntry(newEntry);
     setEditing(false);
   }
@@ -34,6 +40,7 @@ export function TodayPage() {
   return (
     <div className="today-page">
       <p className="today-page__greeting">오늘 밤도 푹 쉬고, 내일 아침에 기록해줘요 🌙</p>
+      {saveError && <p className="sleep-entry-form__error">{saveError}</p>}
       <SleepEntryForm date={today} initialEntry={entry ?? undefined} onSubmit={handleSubmit} />
     </div>
   );

@@ -3,7 +3,12 @@ import { SleepEntry } from './sleepTypes';
 const STORAGE_KEY = 'sleepDiary:entries';
 
 function readAll(): Record<string, SleepEntry> {
-  const raw = localStorage.getItem(STORAGE_KEY);
+  let raw: string | null;
+  try {
+    raw = localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return {};
+  }
   if (!raw) return {};
   try {
     return JSON.parse(raw) as Record<string, SleepEntry>;
@@ -12,14 +17,19 @@ function readAll(): Record<string, SleepEntry> {
   }
 }
 
-function writeAll(entries: Record<string, SleepEntry>): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+function writeAll(entries: Record<string, SleepEntry>): boolean {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export function saveEntry(entry: SleepEntry): void {
+export function saveEntry(entry: SleepEntry): boolean {
   const all = readAll();
   all[entry.date] = entry;
-  writeAll(all);
+  return writeAll(all);
 }
 
 export function getEntry(date: string): SleepEntry | null {
