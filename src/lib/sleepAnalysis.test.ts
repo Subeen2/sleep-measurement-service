@@ -92,10 +92,8 @@ describe('cached analysis', () => {
 });
 
 describe('requestSleepAnalysis', () => {
-  const originalFetch = global.fetch;
-
   afterEach(() => {
-    global.fetch = originalFetch;
+    vi.unstubAllGlobals();
     vi.unstubAllEnvs();
   });
 
@@ -106,15 +104,16 @@ describe('requestSleepAnalysis', () => {
 
   it('returns the analysis text on success', async () => {
     vi.stubEnv('VITE_SLEEP_ANALYSIS_WORKER_URL', 'https://example.workers.dev');
-    global.fetch = vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       text: () => Promise.resolve('분석 결과 텍스트'),
-    }) as unknown as typeof fetch;
+    });
+    vi.stubGlobal('fetch', fetchMock);
 
     const result = await requestSleepAnalysis([makeEntry('2026-08-01')]);
 
     expect(result).toBe('분석 결과 텍스트');
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(fetchMock).toHaveBeenCalledWith(
       'https://example.workers.dev',
       expect.objectContaining({ method: 'POST' })
     );
@@ -122,7 +121,7 @@ describe('requestSleepAnalysis', () => {
 
   it('throws when the response is not ok', async () => {
     vi.stubEnv('VITE_SLEEP_ANALYSIS_WORKER_URL', 'https://example.workers.dev');
-    global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 }) as unknown as typeof fetch;
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }));
 
     await expect(requestSleepAnalysis([makeEntry('2026-08-01')])).rejects.toThrow();
   });
