@@ -98,8 +98,95 @@ body {
   gap: 12px;
 }
 
+.sleep-entry-form label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.sleep-entry-form label:has(input[type='checkbox']) {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.sleep-entry-form input[type='time'],
+.sleep-entry-form input[type='number'] {
+  font-family: 'Galmuri11', sans-serif;
+  background: var(--color-card);
+  color: var(--color-text);
+  border: 3px solid var(--color-wood-dark);
+  box-shadow: var(--shadow-pixel);
+  padding: 8px;
+  font-size: 1rem;
+  outline: none;
+  color-scheme: dark;
+}
+
+.sleep-entry-form input[type='number'] {
+  width: 80px;
+}
+
+.sleep-entry-form input[type='time']:focus,
+.sleep-entry-form input[type='number']:focus {
+  border-color: var(--color-accent-lavender);
+  box-shadow: 4px 4px 0 var(--color-accent-lavender);
+}
+
+.sleep-entry-form input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  background: var(--color-card);
+  border: 3px solid var(--color-wood-dark);
+  box-shadow: 2px 2px 0 var(--color-wood-dark);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.sleep-entry-form input[type='checkbox']:checked {
+  background: var(--color-accent-pink);
+}
+
+.sleep-entry-form input[type='checkbox']:checked::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  color: #3a3a3a;
+}
+
 .sleep-entry-form__error {
   color: var(--color-accent-pink);
+  border: 2px solid var(--color-accent-pink);
+  background: rgba(244, 198, 215, 0.1);
+  padding: 8px;
+}
+
+.history-page__nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.history-page__nav-button {
+  padding: 2px 8px;
+  font-size: 0.85rem;
+  box-shadow: 2px 2px 0 var(--color-wood-dark);
+}
+
+.history-page__nav-button:active {
+  transform: translate(2px, 2px);
 }
 
 .calendar-view__weekdays,

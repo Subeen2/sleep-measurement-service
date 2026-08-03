@@ -36,11 +36,15 @@ export function HistoryPage() {
   return (
     <div className="history-page">
       <div className="history-page__nav">
-        <PixelButton onClick={goToPreviousMonth}>◀</PixelButton>
+        <PixelButton className="history-page__nav-button" onClick={goToPreviousMonth}>
+          ◀
+        </PixelButton>
         <span>
           {year}년 {month}월
         </span>
-        <PixelButton onClick={goToNextMonth}>▶</PixelButton>
+        <PixelButton className="history-page__nav-button" onClick={goToNextMonth}>
+          ▶
+        </PixelButton>
       </div>
       <CalendarView
         year={year}
