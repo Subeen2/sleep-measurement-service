@@ -226,3 +226,19 @@ body {
   font-size: 0.85rem;
   color: var(--color-accent-moon);
 }
+
+.ai-analysis-card__result {
+  text-align: left;
+  white-space: pre-line;
+  margin: 12px 0;
+}
+
+.ai-analysis-card__notice {
+  font-size: 0.75rem;
+  color: var(--color-accent-moon);
+  margin-top: 8px;
+}
+
+.ai-analysis-card__error {
+  color: var(--color-accent-pink);
+}
