@@ -36,6 +36,8 @@ npm test
 1. [OpenAI API 키](https://platform.openai.com/api-keys)를 발급받습니다 (결제 수단 등록 필요).
 2. [Cloudflare 계정](https://dash.cloudflare.com/sign-up)을 만듭니다 (무료, 신용카드 불필요).
 3. Worker를 배포합니다.
+
+   **포크해서 사용하는 경우:** `worker/sleep-analysis/src/index.ts`의 `ALLOWED_ORIGINS`에 있는 `https://subeen2.github.io`를 본인의 GitHub Pages 주소(`https://<your-username>.github.io`)로 바꾼 뒤 배포하세요. 그렇지 않으면 배포된 Worker가 본인 사이트의 요청을 403으로 거부합니다.
    ```bash
    cd worker/sleep-analysis
    npm install

@@ -14,7 +14,9 @@ export interface CachedAnalysis {
 
 export function getRecentEntriesForAnalysis(referenceDate: string = getLocalDateString()): SleepEntry[] {
   const cutoff = addDays(referenceDate, -(ANALYSIS_WINDOW_DAYS - 1));
-  return getAllEntries().filter((entry) => entry.date >= cutoff && entry.date <= referenceDate);
+  return getAllEntries()
+    .filter((entry) => entry.date >= cutoff && entry.date <= referenceDate)
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
 }
 
 export function hasEnoughDataForAnalysis(entries: SleepEntry[]): boolean {
@@ -62,5 +64,9 @@ export async function requestSleepAnalysis(entries: SleepEntry[]): Promise<strin
   if (!res.ok) {
     throw new Error(`분석 요청 실패: ${res.status}`);
   }
-  return res.text();
+  const text = await res.text();
+  if (!text.trim()) {
+    throw new Error('분석 결과가 비어있어요');
+  }
+  return text;
 }

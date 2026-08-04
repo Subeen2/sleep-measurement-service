@@ -43,6 +43,16 @@ describe('getRecentEntriesForAnalysis', () => {
     const result = getRecentEntriesForAnalysis('2026-08-03');
     expect(result.map((e) => e.date)).toEqual(['2026-08-03']);
   });
+
+  it('returns entries in ascending chronological order even when storage returns them descending', () => {
+    vi.spyOn(sleepStorage, 'getAllEntries').mockReturnValue([
+      makeEntry('2026-08-03'),
+      makeEntry('2026-08-02'),
+      makeEntry('2026-08-01'),
+    ]);
+    const result = getRecentEntriesForAnalysis('2026-08-03');
+    expect(result.map((e) => e.date)).toEqual(['2026-08-01', '2026-08-02', '2026-08-03']);
+  });
 });
 
 describe('hasEnoughDataForAnalysis', () => {
@@ -122,6 +132,19 @@ describe('requestSleepAnalysis', () => {
   it('throws when the response is not ok', async () => {
     vi.stubEnv('VITE_SLEEP_ANALYSIS_WORKER_URL', 'https://example.workers.dev');
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }));
+
+    await expect(requestSleepAnalysis([makeEntry('2026-08-01')])).rejects.toThrow();
+  });
+
+  it('throws when the response body is empty', async () => {
+    vi.stubEnv('VITE_SLEEP_ANALYSIS_WORKER_URL', 'https://example.workers.dev');
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(''),
+      })
+    );
 
     await expect(requestSleepAnalysis([makeEntry('2026-08-01')])).rejects.toThrow();
   });

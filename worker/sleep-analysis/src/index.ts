@@ -1,5 +1,6 @@
 import { SleepEntry } from '../../../src/lib/sleepTypes';
 import { OVERALL_CONDITION_LABEL, PHYSICAL_CONDITION_LABEL, ALCOHOL_LABEL } from '../../../src/lib/sleepLabels';
+import { calculateEstimatedSleepMinutes, formatMinutesAsDuration } from '../../../src/lib/sleepCalc';
 
 export interface Env {
   OPENAI_API_KEY: string;
@@ -14,15 +15,23 @@ const SYSTEM_PROMPT =
   '1~2개 제시해. 이모지는 최소한만 사용하고, 과장되거나 의학적 진단처럼 들리는 표현은 피해.';
 
 function summarizeEntry(entry: SleepEntry): string {
+  const weekday = new Date(`${entry.date}T00:00:00Z`).toLocaleDateString('ko-KR', {
+    weekday: 'short',
+    timeZone: 'UTC',
+  });
   const parts = [
-    `${entry.date}: 취침 ${entry.bedTime}, 화면 끔 ${entry.lastScreenTime}, 기상 ${entry.wakeTime}`,
+    `${entry.date}(${weekday}): 취침 ${entry.bedTime}, 화면 끔 ${entry.lastScreenTime}, 기상 ${entry.wakeTime}, 수면 ${formatMinutesAsDuration(calculateEstimatedSleepMinutes(entry))}`,
     `컨디션 ${OVERALL_CONDITION_LABEL[entry.overallCondition]}/${PHYSICAL_CONDITION_LABEL[entry.physicalCondition]}`,
   ];
   if (entry.caffeineShots > 0) {
     parts.push(`카페인 ${entry.caffeineShots}샷${entry.caffeineTime ? `(${entry.caffeineTime})` : ''}`);
+  } else {
+    parts.push('카페인 없음');
   }
   if (entry.hadAlcohol) {
     parts.push(`음주${entry.alcoholType ? ` (${ALCOHOL_LABEL[entry.alcoholType]})` : ''}`);
+  } else {
+    parts.push('음주 없음');
   }
   if (entry.lastMealTime) {
     parts.push(`마지막 식사 ${entry.lastMealTime}`);
@@ -64,8 +73,8 @@ export default {
       return new Response('Invalid JSON', { status: 400, headers });
     }
 
-    if (!Array.isArray(body.entries) || body.entries.length === 0) {
-      return new Response('entries is required', { status: 400, headers });
+    if (!Array.isArray(body.entries) || body.entries.length === 0 || body.entries.length > 31) {
+      return new Response('entries is required (max 31)', { status: 400, headers });
     }
 
     const summary = body.entries.map(summarizeEntry).join('\n');
@@ -85,18 +94,30 @@ export default {
             { role: 'user', content: summary },
           ],
           temperature: 0.7,
+          max_tokens: 500,
         }),
       });
-    } catch {
+    } catch (err) {
+      console.error('OpenAI fetch failed:', err);
       return new Response('OpenAI request failed', { status: 502, headers });
     }
 
     if (!openaiRes.ok) {
+      console.error('OpenAI returned non-OK status:', openaiRes.status, await openaiRes.text());
       return new Response('OpenAI request failed', { status: 502, headers });
     }
 
-    const data = (await openaiRes.json()) as { choices: { message: { content: string } }[] };
-    const text = data.choices[0]?.message?.content?.trim() ?? '';
+    let text: string;
+    try {
+      const data = (await openaiRes.json()) as { choices: { message: { content: string } }[] };
+      text = data.choices[0]?.message?.content?.trim() ?? '';
+    } catch {
+      return new Response('OpenAI response parsing failed', { status: 502, headers });
+    }
+
+    if (!text) {
+      return new Response('empty completion', { status: 502, headers });
+    }
 
     return new Response(text, {
       status: 200,
