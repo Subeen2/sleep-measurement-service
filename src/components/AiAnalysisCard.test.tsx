@@ -28,11 +28,12 @@ describe('AiAnalysisCard', () => {
     vi.spyOn(sleepAnalysis, 'isAnalysisFeatureEnabled').mockReturnValue(false);
     vi.spyOn(sleepAnalysis, 'getRecentEntriesForAnalysis').mockReturnValue(THREE_ENTRIES);
     vi.spyOn(sleepAnalysis, 'hasEnoughDataForAnalysis').mockReturnValue(true);
-    vi.spyOn(sleepAnalysis, 'getCachedAnalysis').mockReturnValue(null);
+    const getCachedSpy = vi.spyOn(sleepAnalysis, 'getCachedAnalysis').mockReturnValue(null);
 
     const { container } = render(<AiAnalysisCard />);
 
     expect(container).toBeEmptyDOMElement();
+    expect(getCachedSpy).not.toHaveBeenCalled();
   });
 
   it('shows a friendly message with no button when there is not enough data', () => {

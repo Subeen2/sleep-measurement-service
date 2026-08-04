@@ -15,12 +15,14 @@ type State =
   | { status: 'error'; message: string; cachedText: string | null };
 
 export function AiAnalysisCard() {
-  const [state, setState] = useState<State>(() => ({
-    status: 'idle',
-    cachedText: getCachedAnalysis()?.text ?? null,
-  }));
+  const enabled = isAnalysisFeatureEnabled();
+  const [state, setState] = useState<State>(() =>
+    enabled
+      ? { status: 'idle', cachedText: getCachedAnalysis()?.text ?? null }
+      : { status: 'idle', cachedText: null }
+  );
 
-  if (!isAnalysisFeatureEnabled()) return null;
+  if (!enabled) return null;
 
   const entries = getRecentEntriesForAnalysis();
 
