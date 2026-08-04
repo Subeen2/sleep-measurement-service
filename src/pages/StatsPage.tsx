@@ -1,6 +1,7 @@
 import { getAllEntries } from '../lib/sleepStorage';
 import { bestSleepOnsetBucket, bestSleepDurationBucket } from '../lib/sleepStats';
 import { StatsSummary } from '../components/StatsSummary';
+import { AiAnalysisCard } from '../components/AiAnalysisCard';
 
 export function StatsPage() {
   const entries = getAllEntries();
@@ -21,6 +22,7 @@ export function StatsPage() {
         bucket={bestSleepDurationBucket(entries)}
         emptyMessage="아직 데이터가 부족해요"
       />
+      <AiAnalysisCard />
     </div>
   );
 }
